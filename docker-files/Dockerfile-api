@@ -1,0 +1,12 @@
+FROM node
+
+WORKDIR /devwars
+
+ADD ./api/package.json .
+ADD ./api/yarn.lock .
+
+RUN yarn
+
+EXPOSE 3030
+
+ENTRYPOINT ["yarn", "run", "dev"]

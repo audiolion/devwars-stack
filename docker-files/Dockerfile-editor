@@ -1,0 +1,7 @@
+FROM node:slim
+
+WORKDIR /app
+
+EXPOSE 8000
+
+CMD npm ci && DEVWARS_URL=${DEVWARS_URL} FIREBASE_DATABASE_URL=https://${FIREBASE_ID}.firebaseio.com npm run watch

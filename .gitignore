@@ -1,0 +1,7 @@
+# Editors
+.idea
+
+# Storage
+mysql/
+
+docker-compose.yml

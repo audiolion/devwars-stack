@@ -1,0 +1,13 @@
+[submodule "web"]
+	path = web
+	url = git@github.com:DevWars/devwars.tv.git
+	branch = node-api
+[submodule "api"]
+	path = api
+	url = git@github.com:DevWars/devwars-api.git
+[submodule "editor"]
+	path = editor
+	url = git@github.com:DevWars/devwars-live.git
+[submodule "bot"]
+	path = bot
+	url = git@github.com:DevWars/DW_Bot.git
