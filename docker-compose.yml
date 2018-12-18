@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik
+    command: --api --docker
+    environment:
+      - exposedByDefault=false
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.backend=reverse-proxy"
+      - "traefik.port=8080"
+      - "traefik.frontend.rule=Host:traefik.devwars.test"
+  database:
+    image: mysql:5.7
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: devwars_api
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    labels:
+      - "traefik.enable=false"
+      - "traefik.backend=database"
+  api:
+    build:
+      context: .
+      dockerfile: ./docker-files/Dockerfile-api
+    env_file:
+      - .env.api
+    volumes:
+      - ./api/app:/devwars/app
+      - ./api/config:/devwars/config
+      - ./api/cli:/devwars/cli
+      - ./api/Index.ts:/devwars/Index.ts
+      - ./api/config.ts:/devwars/config.ts
+      - ./api/nodemon.json:/devwars/nodemon.json
+      - ./api/tsconfig.json:/devwars/tsconfig.json
+      - ./api/tslint.json:/devwars/tslint.json
+    depends_on:
+      - database
+    links:
+      - database
+    labels:
+      - "traefik.backend=api"
+      - "traefik.port=3030"
+      - "traefik.frontend.rule=Host:api.devwars.test"
+  web:
+    build:
+      context: .
+      dockerfile: docker-files/Dockerfile-web
+      args:
+        API_URL_BROWSER: http://api.devwars.test
+        API_URL: http://api:3030
+    volumes:
+      - ./web:/app
+    env_file:
+      - .env.web
+    labels:
+      - "traefik.backend=web"
+      - "traefik.port=3000"
+      - "traefik.frontend.rule=Host:devwars.test"
+  editor:
+    build:
+      context: .
+      dockerfile: docker-files/Dockerfile-editor
+    env_file:
+      - .env.editor
+    environment:
+      FIREBASE_ID: devwars-tv-bbae1
+      DEVWARS_URL: http://api.devwars.test
+    restart: always
+    labels:
+      - "traefik.backend=editor"
+      - "traefik.port=8000"
+      - "traefik.frontend.rule=Host:watch.devwars.test"
+    volumes:
+      - ./firebase.json:/app/config/serviceAccountKey.json
+      - ./editor:/app

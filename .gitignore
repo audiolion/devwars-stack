@@ -4,4 +4,8 @@
 # Storage
 mysql/
 
-docker-compose.yml
+.env*
+
+!*.example
+
+firebase.json
