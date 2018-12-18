@@ -31,3 +31,5 @@
 127.0.0.1 watch.devwars.test
 127.0.0.1 play.devwars.test
 ``` 
+
+Done, head to [devwars.test](http://devwars.test) in your browser! 🔥🔥🔥
